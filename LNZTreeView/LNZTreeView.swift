@@ -520,7 +520,13 @@ extension LNZTreeView: UITableViewDelegate {
     // Customize
     @available(iOS 11.0, *)
     public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        return delegate?.treeView?(self, trailingSwipeActionsConfigurationForRowAt: indexPath)
+        guard var nodes = nodesForSection[indexPath.section],
+            let indexInParent = self.indexInParent(forNodeAt: indexPath) else {
+                fatalError("Something wrong here")
+        }
+        let node = nodes[indexPath.row]
+        
+        return delegate?.treeView?(self, trailingSwipeActionsConfigurationForRowAt: indexInParent, forParentNode: node.parent)
     }
     
     private func expandNode(_ node: MinimalTreeNode, at indexPath: IndexPath, in nodes: inout [MinimalTreeNode]) -> CountableClosedRange<Int>? {

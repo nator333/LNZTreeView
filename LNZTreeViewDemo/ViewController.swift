@@ -50,10 +50,7 @@ class ViewController: UIViewController {
         treeView.register(CustomUITableViewCell.self, forCellReuseIdentifier: "cell")
 
         treeView.tableViewRowAnimation = .right
-        
-        treeView.dragDelegate = self
-        treeView.dropDelegate = self
-        
+                
         generateRandomNodes()
         treeView.resetTree()
     }

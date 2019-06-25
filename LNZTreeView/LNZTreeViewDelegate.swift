@@ -60,5 +60,5 @@ import Foundation
     
     // Customize
     @available(iOS 11.0, *)
-    @objc optional func treeView(_ treeView: LNZTreeView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+    @objc optional func treeView(_ treeView: LNZTreeView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath, forParentNode parentNode: TreeNodeProtocol?) -> UISwipeActionsConfiguration?
 }

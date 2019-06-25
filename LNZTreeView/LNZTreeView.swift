@@ -28,7 +28,7 @@ public class LNZTreeView: UIView {
             self.identifier = identifier
         }
     }
-        
+    
     @IBInspectable public var indentationWidth: CGFloat = 10
     @IBInspectable public var isEditing: Bool {
         get { return tableView.isEditing }
@@ -48,12 +48,12 @@ public class LNZTreeView: UIView {
     public func setEditing(_ editing: Bool, animated: Bool) {
         tableView.setEditing(editing, animated: animated)
     }
-
-    lazy var tableView: UITableView! = {
+    
+    public lazy var tableView: UITableView! = {
         return UITableView(frame: frame, style: .plain)
     }()
     public var tableViewRowAnimation: UITableView.RowAnimation = .right
-
+    
     var nodesForSection = [Int: [MinimalTreeNode]]()
     
     @IBOutlet public weak var dataSource: LNZTreeViewDataSource?
@@ -97,7 +97,7 @@ public class LNZTreeView: UIView {
     
     open override func didMoveToSuperview() {
         super.didMoveToSuperview()
-
+        
         tableView.reloadData()
     }
     
@@ -267,7 +267,7 @@ public class LNZTreeView: UIView {
             let node = nodesForSection[indexPath.section]?[indexPath.row],
             let index = indexInParent(forNodeAt: indexPath),
             let dataSource = dataSource else {
-            return nil
+                return nil
         }
         
         return dataSource.treeView(self, nodeForRowAt: index, forParentNode: node.parent)
@@ -307,7 +307,7 @@ public class LNZTreeView: UIView {
         newNode.isExpandable = fullNewNode.isExpandable
         newNode.indentationLevel = indentationLevel
         newNode.parent = parentNode
-
+        
         nodesForSection[indexPath.section]?.insert(newNode, at: realIndexPath.item)
         tableView.insertRows(at: [realIndexPath], with: .right)
     }
@@ -326,7 +326,7 @@ public class LNZTreeView: UIView {
         
         var indexPaths = [indexPath]
         let minimalNode = nodes[indexPath.row]
-
+        
         if minimalNode.isExpandable {
             if let range = closeNode(minimalNode, atIndex: indexPath.row, in: &nodes) {
                 indexPaths += range.map { IndexPath(row: $0, section: section) }
@@ -397,7 +397,7 @@ extension LNZTreeView: UITableViewDataSource {
                 }
                 let node = MinimalTreeNode(identifier: fullNode.identifier)
                 node.isExpandable = fullNode.isExpandable
-
+                
                 nodes.append(node)
                 nodesForSection[section] = nodes
             }
@@ -410,7 +410,7 @@ extension LNZTreeView: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let node = nodesForSection[indexPath.section]?[indexPath.row],
             let index = indexInParent(forNodeAt: indexPath) else {
-            fatalError("Something wrong here")
+                fatalError("Something wrong here")
         }
         
         //The logic of this view guarantees that if the node is a child, its parent will be not nil even if this is a placeholder.
@@ -451,7 +451,7 @@ extension LNZTreeView: UITableViewDelegate {
                 fatalError("Something wrong here")
         }
         let node = nodes[indexPath.row]
-
+        
         return delegate?.treeView?(self, canEditRowAt: indexInParent, forParentNode: node.parent) ?? false
     }
     
@@ -471,7 +471,7 @@ extension LNZTreeView: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard var nodes = nodesForSection[indexPath.section],
             let indexInParent = self.indexInParent(forNodeAt: indexPath) else {
-            fatalError("Something wrong here")
+                fatalError("Something wrong here")
         }
         let node = nodes[indexPath.row]
         
@@ -517,13 +517,19 @@ extension LNZTreeView: UITableViewDelegate {
         }
     }
     
+    // Customize
+    @available(iOS 11.0, *)
+    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        return delegate?.treeView?(self, trailingSwipeActionsConfigurationForRowAt: indexPath)
+    }
+    
     private func expandNode(_ node: MinimalTreeNode, at indexPath: IndexPath, in nodes: inout [MinimalTreeNode]) -> CountableClosedRange<Int>? {
         defer { node.isExpanded = true }
         guard let index = indexInParent(forNodeAt: indexPath),
             let fullNode = dataSource?.treeView(self, nodeForRowAt: index, forParentNode: node.parent) else {
-            fatalError("invalid dataSource for treeView: \(self)")
+                fatalError("invalid dataSource for treeView: \(self)")
         }
-
+        
         let numberOfChildren = dataSource?.treeView(self, numberOfRowsInSection: indexPath.section, forParentNode: fullNode) ?? 0
         guard numberOfChildren > 0 else { return nil }
         var newNodes = [MinimalTreeNode]()
@@ -531,7 +537,7 @@ extension LNZTreeView: UITableViewDelegate {
             guard let fullNewNode = dataSource?.treeView(self, nodeForRowAt: IndexPath(row: i, section: indexPath.section), forParentNode: fullNode) else {
                 fatalError("invalid dataSource for treeView: \(self)")
             }
-
+            
             let newNode = MinimalTreeNode(identifier: fullNewNode.identifier)
             newNode.isExpandable = fullNewNode.isExpandable
             newNode.indentationLevel = node.indentationLevel + 1
@@ -563,7 +569,7 @@ extension LNZTreeView: UITableViewDelegate {
         }
         
         guard removedNodes > 0 else { return nil }
-
+        
         return index+1...index+removedNodes
     }
 }

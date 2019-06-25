@@ -8,6 +8,8 @@
 
 import UIKit
 import LNZTreeView
+import Social
+import MobileCoreServices
 
 class CustomUITableViewCell: UITableViewCell
 {
@@ -48,6 +50,9 @@ class ViewController: UIViewController {
         treeView.register(CustomUITableViewCell.self, forCellReuseIdentifier: "cell")
 
         treeView.tableViewRowAnimation = .right
+        
+        treeView.dragDelegate = self
+        treeView.dropDelegate = self
         
         generateRandomNodes()
         treeView.resetTree()
@@ -147,5 +152,71 @@ extension ViewController: LNZTreeViewDataSource {
 extension ViewController: LNZTreeViewDelegate {
     func treeView(_ treeView: LNZTreeView, heightForNodeAt indexPath: IndexPath, forParentNode parentNode: TreeNodeProtocol?) -> CGFloat {
         return 60
+    }
+}
+
+extension ViewController: UITableViewDragDelegate {
+    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        return self.dragItems(for: indexPath)
+    }
+    
+    private func dragItems(for indexPath: IndexPath) -> [UIDragItem] {
+        
+        let placeName = self.root[indexPath.row]
+        //let data = placeName.data(using: .utf8)
+        let itemProvider = NSItemProvider(object: placeName.identifier as NSString)
+        return [
+            UIDragItem(itemProvider: itemProvider)
+        ]
+    }
+}
+
+extension ViewController: UITableViewDropDelegate {
+    func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
+        return self.canHandle(session)
+    }
+    
+    private func canHandle(_ session: UIDropSession) -> Bool {
+        return session.canLoadObjects(ofClass: NSString.self)
+    }
+    
+    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+        // The .move operation is available only for dragging within a single app.
+        if tableView.hasActiveDrag {
+            if session.items.count > 1 {
+                return UITableViewDropProposal(operation: .cancel)
+            } else {
+                return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+            }
+        } else {
+            return UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+        let destinationIndexPath: IndexPath
+        
+        if let indexPath = coordinator.destinationIndexPath {
+            destinationIndexPath = indexPath
+        } else {
+            // Get last index path of table view.
+            let section = tableView.numberOfSections - 1
+            let row = tableView.numberOfRows(inSection: section)
+            destinationIndexPath = IndexPath(row: row, section: section)
+        }
+        
+        coordinator.session.loadObjects(ofClass: NSString.self) { items in
+            // Consume drag items.
+            let stringItems = items as! [String]
+            
+            var indexPaths = [IndexPath]()
+            for (index, _) in stringItems.enumerated() {
+                let indexPath = IndexPath(row: destinationIndexPath.row + index, section: destinationIndexPath.section)
+                //self.model.addItem(item, at: indexPath.row)
+                indexPaths.append(indexPath)
+            }
+            
+            tableView.insertRows(at: indexPaths, with: .automatic)
+        }
     }
 }

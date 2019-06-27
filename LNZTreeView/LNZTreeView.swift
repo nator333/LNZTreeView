@@ -309,7 +309,7 @@ public class LNZTreeView: UIView {
         newNode.parent = parentNode
         
         nodesForSection[indexPath.section]?.insert(newNode, at: realIndexPath.item)
-        tableView.insertRows(at: [realIndexPath], with: .right)
+        tableView.insertRows(at: [realIndexPath], with: .none)
     }
     
     /**

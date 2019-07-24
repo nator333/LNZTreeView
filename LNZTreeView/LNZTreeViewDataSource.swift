@@ -14,6 +14,18 @@ import UIKit
     
     func sectionIndexTitles(for treeView: LNZTreeView) -> [String]?
     
+    func treeView(_ treeView: LNZTreeView, willDisplayHeaderView view: UIView, forSection section: Int)
+    
+    /**
+     Set height for section header.
+     
+     - parameter treeView: The treeView asking for the height of the section header
+     - parameter section: An index number identifying the section in treeView.
+     
+     - returns: An int value indicating the height for section header
+     */
+    func treeView(_ treeView: LNZTreeView, heightForHeaderInSection section: Int) -> CGFloat
+    
     /**
      This method is indexed differently from a normal UITableView. The number of rows in a method call is
      dependant from the parent node parameter. If not nil, the parentNode indicates that treeView wants to

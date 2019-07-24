@@ -99,6 +99,13 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: LNZTreeViewDataSource {
+    func treeView(_ treeView: LNZTreeView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    }
+    
+    func treeView(_ treeView: LNZTreeView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
     func sectionIndexTitles(for treeView: LNZTreeView) -> [String]? {
         return nil
     }

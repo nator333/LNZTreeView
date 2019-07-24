@@ -386,10 +386,6 @@ extension LNZTreeView: UITableViewDataSource {
         return dataSource?.numberOfSections(in: self) ?? 0
     }
     
-    public func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return dataSource?.sectionIndexTitles(for: self)
-    }
-    
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return dataSource?.treeView(self, heightForHeaderInSection: section) ?? 0
     }

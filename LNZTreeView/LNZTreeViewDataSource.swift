@@ -12,8 +12,6 @@ import UIKit
     ///The tree view can be sectioned just like the UITableView
     func numberOfSections(in treeView: LNZTreeView) -> Int
     
-    func sectionIndexTitles(for treeView: LNZTreeView) -> [String]?
-    
     func treeView(_ treeView: LNZTreeView, willDisplayHeaderView view: UIView, forSection section: Int)
     
     func treeView(_ treeView: LNZTreeView, viewForHeaderInSection section: Int) -> UIView?

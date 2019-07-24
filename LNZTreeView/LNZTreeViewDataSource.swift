@@ -16,6 +16,8 @@ import UIKit
     
     func treeView(_ treeView: LNZTreeView, willDisplayHeaderView view: UIView, forSection section: Int)
     
+    func treeView(_ treeView: LNZTreeView, viewForHeaderInSection section: Int) -> UIView?
+    
     /**
      Set height for section header.
      

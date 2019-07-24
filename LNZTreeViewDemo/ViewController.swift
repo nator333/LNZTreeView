@@ -99,6 +99,10 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: LNZTreeViewDataSource {
+    func treeView(_ treeView: LNZTreeView, viewForHeaderInSection section: Int) -> UIView? {
+        return nil
+    }
+    
     func treeView(_ treeView: LNZTreeView, willDisplayHeaderView view: UIView, forSection section: Int) {
     }
     

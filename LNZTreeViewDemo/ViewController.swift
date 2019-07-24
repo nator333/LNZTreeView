@@ -99,6 +99,10 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: LNZTreeViewDataSource {
+    func sectionIndexTitles(for treeView: LNZTreeView) -> [String]? {
+        return nil
+    }
+    
     func numberOfSections(in treeView: LNZTreeView) -> Int {
         return 1
     }

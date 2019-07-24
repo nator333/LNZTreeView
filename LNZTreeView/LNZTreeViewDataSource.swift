@@ -12,6 +12,8 @@ import UIKit
     ///The tree view can be sectioned just like the UITableView
     func numberOfSections(in treeView: LNZTreeView) -> Int
     
+    func sectionIndexTitles(for treeView: LNZTreeView) -> [String]?
+    
     /**
      This method is indexed differently from a normal UITableView. The number of rows in a method call is
      dependant from the parent node parameter. If not nil, the parentNode indicates that treeView wants to
